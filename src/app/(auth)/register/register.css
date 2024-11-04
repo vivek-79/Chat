@@ -1,0 +1,80 @@
+
+
+
+.register{
+    width: 100%;
+    height: 100vh;
+    border: 1px solid;
+    margin: auto;
+}
+
+.form-comp{
+    width: 80%;
+    background-color: rgba(255, 255, 255, 0.712);
+    margin: auto;
+    height: 40px;
+    margin-bottom: 8px;
+    display: flex;
+    box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.314);
+    padding: 0 5px 0 0;
+    border-radius: 10px;
+    align-items: center;
+    justify-content: center;
+}
+
+.form-comp input{
+    width: 100%;
+    margin: auto;
+    margin-bottom: 5px;
+    height: 100%;
+    border: none;
+    border-radius: 5px;
+    outline: none;
+    background-color: transparent;
+    padding: 10px;
+    font-size: 18px;
+    color: rgba(0, 0, 0, 0.689);
+}
+.form-comp h2{
+    text-align: center;
+}
+.register-form{
+    width: min(400px,100%);
+    min-height: 100px ;
+    border: 1px solid rgba(255, 255, 255, 0.175);
+    margin: auto;
+    margin-top: 20vh;
+    background-color: rgba(255, 255, 255, 0.092);
+    border-radius: 10px;
+    padding: 30px 0;
+}
+.register-form p{
+    text-align: center;
+}
+.register-form a{
+    color: rgb(99, 99, 255);
+}
+.form-comp button{
+    padding: 5px;
+    font-size: 17px;
+    border: none;
+    border-radius: 5px;
+    width: 100%;
+    background-color: transparent;
+    height: 35px;
+}
+.error{
+    color: rgba(254, 90, 90, 0.695);
+    font-size: 14px;
+    margin-bottom: -8px;
+}
+
+#header{
+    background-color: transparent;
+}
+#button{
+    background-color: rgba(139, 250, 250, 0.504);
+}
+.icon{
+    color: black;
+}

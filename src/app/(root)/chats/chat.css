@@ -1,0 +1,18 @@
+
+.chats-page{
+    width: 100%;
+    height: calc(100vh - 40px);
+    border: 1px solid;
+    display: flex;
+}
+
+.chat-page-left{
+    width: 33.33%;
+    height: 100%;
+    border: 1px solid;
+}
+.chat-page-right{
+    width: 66.66%;
+    height: 100%;
+    border: 1px solid;
+}
