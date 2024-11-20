@@ -4,7 +4,7 @@ import React from 'react'
 import './chat.css'
 import ChatList from '@/components/ChatList'
 import Contacts from '@/components/Contacts'
-function page() {
+function Chatpage() {
   return (
     <div className='chats-page'>
         <div className='chat-page-left'><ChatList/></div>
@@ -17,4 +17,4 @@ function page() {
   )
 }
 
-export default page
+export default Chatpage
