@@ -9,7 +9,7 @@ import MailIcon from '@mui/icons-material/Mail';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import { useRouter } from 'next/navigation'
 
-function page() {
+function Page() {
 
     const router = useRouter()
     const { register, handleSubmit } = useForm()
@@ -88,4 +88,4 @@ function page() {
     )
 }
 
-export default page
+export default Page
