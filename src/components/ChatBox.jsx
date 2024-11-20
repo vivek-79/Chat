@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
+import { BASE_URL } from '@/utils/constants'
 
 
 function ChatBox({
@@ -21,7 +22,7 @@ function ChatBox({
     const [chat,setChat] = useState({})
     useEffect(()=>{
         const res = async()=>{
-            const res = await fetch(`http://localhost:3000/api/lastMessage?messageId=${messageId}`)
+            const res = await fetch(`${BASE_URL}/api/lastMessage?messageId=${messageId}`)
 
             const result = await res.json();
             setChat(result?.updatedChat)

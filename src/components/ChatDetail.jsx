@@ -7,6 +7,7 @@ import SendIcon from '@mui/icons-material/Send';
 import { useForm } from 'react-hook-form';
 import Loader from './Loader';
 import { pusherClient } from '@/lib/pusher';
+import { BASE_URL } from '@/utils/constants';
 function ChatDetail({ detail }) {
     const member = detail.members
     const { register, handleSubmit, reset } = useForm()
@@ -17,7 +18,7 @@ function ChatDetail({ detail }) {
     const latestMessageRef = useRef(null);
     const fetchChatMessages = async () => {
         try {
-            const res = await fetch(`http://localhost:3000/api/messages?chatId=${detail._id}`);
+            const res = await fetch(`${BASE_URL}/api/messages?chatId=${detail._id}`);
             const result = await res.json();
             console.log(result)
             if (result.success) {
@@ -71,7 +72,7 @@ function ChatDetail({ detail }) {
             if(!message.text && !message.photo){
                 return null
             }
-            const res = await fetch('http://localhost:3000/api/messages', {
+            const res = await fetch(`${BASE_URL}/api/messages`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -94,7 +95,7 @@ function ChatDetail({ detail }) {
             chatId: detail._id,
             userId:userId
         }
-        const res = await fetch ('http://localhost:3000/api/chatDetails',{
+        const res = await fetch (`${BASE_URL}/api/chatDetails`,{
             method:'POST',
             headers:{
                 'Content-Type':'application/json',

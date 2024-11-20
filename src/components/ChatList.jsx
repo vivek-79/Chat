@@ -7,6 +7,7 @@ import Loader from './Loader'
 import ChatBox from './ChatBox'
 import { pusherClient } from '@/lib/pusher'
 import { useRouter } from 'next/navigation'
+import { BASE_URL } from '@/utils/constants'
 
 function ChatList({ chatId }) {
 
@@ -29,7 +30,7 @@ function ChatList({ chatId }) {
   }
   const handleShowrequests = async () => {
     setShowRequests(true)
-    const res = await fetch(`http://localhost:3000/api/sendRequest?userId=${userId}`)
+    const res = await fetch(`${BASE_URL}/api/sendRequest?userId=${userId}`)
     const data = await res.json();
     setRequests(data?.result[0]?.requests)
   }
@@ -42,7 +43,7 @@ function ChatList({ chatId }) {
       decision,
       requestedId
     }
-    const res = await fetch(`http://localhost:3000/api/chats`, {
+    const res = await fetch(`${BASE_URL}/api/chats`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -56,7 +57,7 @@ function ChatList({ chatId }) {
   useEffect(() => {
     setLoading(true)
     const chatContact = async () => {
-      const res = await fetch(`http://localhost:3000/api/chats?userId=${userId}`)
+      const res = await fetch(`${BASE_URL}/api/chats?userId=${userId}`)
       const data = await res.json()
       setContact(data?.chat?.[0]?.chats)
       setLoading(false)

@@ -8,6 +8,7 @@ import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import MailIcon from '@mui/icons-material/Mail';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import { useRouter } from 'next/navigation'
+import { BASE_URL } from '@/utils/constants'
 
 function Page() {
 
@@ -17,7 +18,7 @@ function Page() {
     const handleRegister = async (data) => {
         seterror('')
         try {
-            const register = await fetch('http://localhost:3000/api/signup', {
+            const register = await fetch(`${BASE_URL}/api/signup`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'

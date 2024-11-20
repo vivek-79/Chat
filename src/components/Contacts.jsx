@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react'
 import Loader from './Loader'
 import { useRouter } from 'next/navigation'
+import { BASE_URL } from '@/utils/constants'
 function Contacts() {
     const [loading, setLoading] = useState(true)
     const [contact, setContact] = useState([])
@@ -21,7 +22,7 @@ function Contacts() {
     useEffect(() => {
         const getUser = async () => {
             try {
-                const result = await fetch( searched ==''?`http://localhost:3000/api/recomend?userId=${userId}`:`http://localhost:3000/api/getSearch?searched=${searched}`)
+                const result = await fetch( searched ==''?`${BASE_URL}/api/recomend?userId=${userId}`:`http://${BASE_URL}/api/getSearch?searched=${searched}`)
                 const data = await result.json()
                 setContact(data.result)
                 setLoading(false)
@@ -37,7 +38,7 @@ function Contacts() {
             userId,
             requested:dat,
         };
-        const res = await fetch(`http://localhost:3000/api/sendRequest`,{
+        const res = await fetch(`${BASE_URL}/api/sendRequest`,{
             method:'POST',
             headers:{
                 'Content-Type':'application/json'

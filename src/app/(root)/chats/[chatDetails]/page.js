@@ -5,6 +5,7 @@ import Loader from '@/components/Loader'
 import React, { useEffect, useState } from 'react'
 import '../chat.css'
 import ChatDetail from '@/components/ChatDetail'
+import { BASE_URL } from '@/utils/constants'
 
 function Page({params}) {
 
@@ -16,7 +17,7 @@ function Page({params}) {
 
     const getChat = async()=>{
 
-      const res = await fetch(`http://localhost:3000/api/chatDetails?chatId=${chatId}`)
+      const res = await fetch(`${BASE_URL}/api/chatDetails?chatId=${chatId}`)
 
       const result = await res.json()
       setDetail(result?.res)

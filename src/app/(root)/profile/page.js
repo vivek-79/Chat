@@ -6,6 +6,7 @@ import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import { useForm } from 'react-hook-form';
 import { CldUploadButton } from 'next-cloudinary';
 import Loader from '@/components/Loader';
+import { BASE_URL } from '@/utils/constants';
 
 function Profie() {
 
@@ -32,7 +33,7 @@ function Profie() {
         if(!user) return null
         data.userId = user._id
         try {
-            const post = await fetch('http://localhost:3000/api/updateUser', {
+            const post = await fetch(`${BASE_URL}/api/updateUser`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react'
 import './group.css'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
+import { BASE_URL } from '@/utils/constants'
 function Page() {
 
     const [friend, setFriend] = useState([])
@@ -25,7 +26,7 @@ function Page() {
     }, [])
     useEffect(() => {
         const getUser = async () => {
-            const res = await fetch(`http://localhost:3000/api/getUser?userId=${userId}`)
+            const res = await fetch(`${BASE_URL}/api/getUser?userId=${userId}`)
             const result = await res.json();
             setFriend(result?.user?.[0]?.friends)
         }
@@ -88,7 +89,7 @@ function Page() {
         }
         try {
             setLoading(true)
-            const res = await fetch(`http://localhost:3000/api/getUser`,{
+            const res = await fetch(`${BASE_URL}/api/getUser`,{
                 method:'POST',
                 headers:{
                     'Content-Type':'application/json'

@@ -9,6 +9,7 @@ import { useForm } from 'react-hook-form'
 import { useRouter } from 'next/navigation'
 import MailIcon from '@mui/icons-material/Mail';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
+import { BASE_URL } from '@/utils/constants'
 
 function Page() {
 
@@ -19,7 +20,7 @@ function Page() {
     const handleRegister = async (data) => {
         seterror('')
         try {
-            const register = await fetch('http://localhost:3000/api/login', {
+            const register = await fetch(`${BASE_URL}/api/login`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
