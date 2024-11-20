@@ -1,6 +1,6 @@
 
 'use client'
-import React from 'react'
+import React, { useState } from 'react'
 import LogoutIcon from '@mui/icons-material/Logout';
 import './comps.css'
 import Link from 'next/link';
@@ -10,8 +10,16 @@ import Image from 'next/image';
 
 function TopBar() {
     const pathname = usePathname()
-
-    const user =  JSON.parse(localStorage.getItem('User'))
+  const[user,setUser] = useState()
+    useEffect(() => {
+      if (typeof window !== 'undefined') {
+          setIsClient(true);
+          const storedUser = JSON.parse(localStorage.getItem('User'));
+          if (storedUser) {
+              setUser(storedUser);
+          }
+      }
+  }, [])
     const handleLogout =()=>{
       localStorage.removeItem("User")
     }
