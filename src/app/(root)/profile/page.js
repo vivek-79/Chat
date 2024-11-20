@@ -27,8 +27,8 @@ function Profie() {
         setImg(result?.info?.secure_url)
     }
     const updateProfile = async (data) => {
+        if(!user) return
         data.userId = user._id
-
         try {
             const post = await fetch('http://localhost:3000/api/updateUser', {
                 method: 'POST',
