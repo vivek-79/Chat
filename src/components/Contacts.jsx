@@ -31,7 +31,7 @@ function Contacts() {
             }
         }
         getUser();
-    }, [searched])
+    }, [searched,userId])
 
     const handleRequest = async(dat)=>{
         const data={
