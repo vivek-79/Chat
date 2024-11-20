@@ -22,12 +22,14 @@ function ChatList({ chatId }) {
           const storedUser = JSON.parse(localStorage.getItem('User'));
           if (storedUser) {
             setUserId(storedUser._id);
+            console.log(storedUser)
+
+          }
+          else{
+            router.push('/login')
           }
         }
   },[])
-  if (!userId) {
-    router.push('/login')
-  }
   const handleShowrequests = async () => {
     setShowRequests(true)
     const res = await fetch(`${BASE_URL}/api/sendRequest?userId=${userId}`)
@@ -59,11 +61,11 @@ function ChatList({ chatId }) {
     const chatContact = async () => {
       const res = await fetch(`${BASE_URL}/api/chats?userId=${userId}`)
       const data = await res.json()
-      setContact(data?.chat?.[0]?.chats)
+      setContact(data?.chat?.[0]?.chats || [])
       setLoading(false)
     }
     chatContact()
-  }, [showRequests])
+  }, [showRequests,userId])
 
   useEffect(() => {
     if (userId) {
@@ -99,13 +101,13 @@ function ChatList({ chatId }) {
       <input placeholder='Search...' />
       <div className="chat-list-contact">
         {[
-  ...contact.filter((item) => {
+  ...contact?.filter((item) => {
     return (
       !item.lastMessage?.[0] ||
       item.lastMessage[0].seenBy.some((user) => user._id === userId)
     );
   }),
-  ...contact.filter((item) => {
+  ...contact?.filter((item) => {
     return (
       item.lastMessage?.[0] &&
       !item.lastMessage[0].seenBy.some((user) => user._id === userId)
