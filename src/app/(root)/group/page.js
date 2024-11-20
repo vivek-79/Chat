@@ -22,7 +22,6 @@ function Page() {
                 setUserId(storedUser._id);
             }
         }
-        setLoader(false)
     }, [])
     useEffect(() => {
         const getUser = async () => {
