@@ -10,7 +10,7 @@ import Image from 'next/image';
 
 function TopBar() {
     const pathname = usePathname()
-  const[user,setUser] = useState()
+    const[user,setUser] = useState()
     useEffect(() => {
       if (typeof window !== 'undefined') {
           setIsClient(true);

@@ -6,7 +6,6 @@ import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 function Page() {
 
-    const userId = JSON.parse(localStorage.getItem('User'))?._id
     const [friend, setFriend] = useState([])
     const [groupName, setGroupName] = useState('')
     const [groupPic,setGroupPic] = useState('')
@@ -14,6 +13,17 @@ function Page() {
     const [loading,setLoading] = useState(false)
     const [newGroup,setNewGroup] = useState([])
     const router = useRouter()
+    const [userId, setUserId] = useState(null)
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            setIsClient(true);
+            const storedUser = JSON.parse(localStorage.getItem('User'));
+            if (storedUser) {
+                setUserId(storedUser._id);
+            }
+        }
+        setLoader(false)
+    }, [])
     useEffect(() => {
         const getUser = async () => {
             const res = await fetch(`http://localhost:3000/api/getUser?userId=${userId}`)
