@@ -31,8 +31,10 @@ function Page() {
             if (!result.success) {
                 seterror(result.message)
             }
-            localStorage.setItem('User',JSON.stringify(result.createdUser))
-            router.push('/chats')
+            else{
+                localStorage.setItem('User',JSON.stringify(result.createdUser))
+                router.push('/chats')
+            }
         } catch (error) {
             seterror('Error occured while registering try again')
         }
