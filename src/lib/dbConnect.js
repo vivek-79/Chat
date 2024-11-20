@@ -10,7 +10,9 @@ export const dbConnect = async () => {
         return
     }
     try {
-        const db =await mongoose.connect(process.env.MONGODB_URI)
+        const db =await mongoose.connect(process.env.MONGODB_URI,{
+            serverSelectionTimeoutMS: 30000
+        })
         connected.connection = db.connections[0].readyState
         console.log("db connected successfully")
     } catch (error) {

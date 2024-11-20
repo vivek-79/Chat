@@ -23,6 +23,14 @@ const chatSchema = new Schema({
         type:String,
         default:'',
     },
+    lastMessage:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'Message',
+    },
+    lastMessageAt:{
+        type:Date,
+        default:""
+    },
     groupPhoto:{
         type:String,
         default:'',

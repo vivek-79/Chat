@@ -9,15 +9,13 @@ import { useForm } from 'react-hook-form'
 import { useRouter } from 'next/navigation'
 import MailIcon from '@mui/icons-material/Mail';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
-import { login } from '@/redux/authSlice'
-import { useDispatch } from 'react-redux'
 
 function page() {
 
     const router = useRouter()
     const { register, handleSubmit } = useForm()
     const [error, seterror] = useState('')
-    const dispatch = useDispatch()
+
     const handleRegister = async (data) => {
         seterror('')
         try {
@@ -30,13 +28,12 @@ function page() {
             })
 
             const result = await register.json()
-            console.log(result)
             if (!result.success) {
                 seterror(result.message)
             }
             else {
                 localStorage.setItem("User",JSON.stringify(result.loggedInUser));
-                dispatch(login(result.loggedInUser))
+                router.push('/chats')
                
             }
         } catch (error) {

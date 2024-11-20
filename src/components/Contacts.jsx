@@ -2,10 +2,12 @@
 'use client'
 import React, { useEffect, useState } from 'react'
 import Loader from './Loader'
+import { useRouter } from 'next/navigation'
 function Contacts() {
     const [loading, setLoading] = useState(true)
     const [contact, setContact] = useState([])
     const [searched, setSearched] = useState([])
+    const router = useRouter()
     const userId = JSON.parse(localStorage.getItem('User'))._id
     useEffect(() => {
         const getUser = async () => {
@@ -35,7 +37,9 @@ function Contacts() {
         })
 
         const result = await res.json();
-        console.log(result)
+        if(result.success){
+            alert('Request send')
+        }
     }
 
     return loading ? <Loader /> : (
@@ -53,7 +57,7 @@ function Contacts() {
                 ))}
             </div>
             <div className='create-group'>
-                <button>Create group</button>
+                <button style={{cursor:'pointer'}} onClick={()=>router.push('/group')}>Create group</button>
             </div>
         </div>
     )

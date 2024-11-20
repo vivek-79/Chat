@@ -47,6 +47,12 @@ const userSchema = new Schema({
             type:mongoose.Schema.Types.ObjectId,
             ref:'Chat'
         }
+    ],
+    friends:[
+        {
+            type:mongoose.Schema.Types.ObjectId,
+            ref:'User'
+        }
     ]
 })
 

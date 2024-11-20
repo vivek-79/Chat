@@ -10,6 +10,11 @@ import Image from 'next/image';
 
 function TopBar() {
     const pathname = usePathname()
+
+    const user =  JSON.parse(localStorage.getItem('User'))
+    const handleLogout =()=>{
+      localStorage.removeItem("User")
+    }
   return (
     <div className='top-bar'>
         <div className='top-bar-left'>
@@ -18,9 +23,9 @@ function TopBar() {
         <div className='top-bar-right'>
         <Link href='/chats'><p  className={`${pathname ==='/chats'? 'top-bar-active':''}`}>Chats</p></Link>
             <Link href='/contact'><p  className={`${pathname ==='/contact'? 'top-bar-active':''}`}>Contact</p></Link>
-            <Link href='/'><LogoutIcon sx={{color:'gray'}}/></Link>
+            <Link href='/' onClick={handleLogout}><LogoutIcon sx={{color:'gray'}}/></Link>
             <Link href='/profile'><div className='top-bar-profile'>
-             <Image src="/assets/defaultImg.jpg" width={30} height={30} />
+             <Image src={user?.avatar ||"/assets/defaultImg.jpg"} width={30} height={30} />
             </div></Link>
         </div>
     </div>

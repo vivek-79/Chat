@@ -14,7 +14,6 @@ export async function POST(req){
     await dbConnect();
 
     const data = await req.json();
-    console.log('hii',data)
 
     const user = await User.findById(data.userId)
     if(!user){

@@ -5,6 +5,7 @@ import "../globals.css";
 import { Provider } from "react-redux";
 import store from './../../redux/store'
 import TopBar from '@/components/TopBar'
+import BottomBar from "@/components/BottomBar";
 
 const geistSans = localFont({
   src: "../fonts/GeistVF.woff",
@@ -24,6 +25,7 @@ export default function RootLayout({ children }) {
         <Provider store={store}>
           <TopBar/>
           {children}
+          <BottomBar/>
         </Provider>
       </body>
     </html>

@@ -10,7 +10,6 @@ export async function POST(req) {
     dbConnect();
     const data = await req.json()
     const { fullName, userName, email, password } = data
-        console.log(fullName, userName, email, password)
     if ([fullName, userName, email, password].some((field) => field.trim() == '')) {
         throw new Error('All fields requird')
     }
@@ -40,7 +39,6 @@ export async function POST(req) {
             )
         }
 
-        // await sendEmail({email,emailType:"VERIFY",userId:createdUser._id})
         return NextResponse.json({ success: true ,createdUser }, 
             { status:201}
         )

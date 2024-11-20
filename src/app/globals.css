@@ -45,3 +45,7 @@ a {
 .auth-body{
   background-color: rgba(183, 245, 255, 0.466);
 }
+.error{
+  color: rgba(255, 0, 0, 0.597);
+  margin-top: 5px;
+}
