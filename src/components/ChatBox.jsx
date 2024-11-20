@@ -35,8 +35,8 @@ function ChatBox({
             item._id == userId ? '': 
             <div key={item._id} className={`each-chat ${chatId == chatsId ? 'active-chat':''}`}>
                 <Image src={isGroup? groupPhoto ||'/assets/group.png':item.avatar || '/assets/defaultImg.jpg'} alt="chat-pic" 
-                    width={30}
-                    height={30}
+                    width={40}
+                    height={40}
                     style={{borderRadius:'50%'}}
                 />
                 <div className='each-chat-right'>
