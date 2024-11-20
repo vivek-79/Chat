@@ -46,9 +46,6 @@ function Profie() {
                     localStorage.removeItem("User");
                     localStorage.setItem("User", JSON.stringify(result.updatedUser))
                 }
-                else{
-                    return null
-                }
 
             }
         } catch (error) {
