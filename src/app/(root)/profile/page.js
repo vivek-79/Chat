@@ -1,5 +1,5 @@
 
-'use client'
+'use client';
 import React, { useEffect, useState } from 'react'
 import './profile.css'
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
@@ -13,7 +13,9 @@ function Profie() {
     const [img, setImg] = useState('')
     const [loader, setLoader] = useState(true)
     const [user, setUser] = useState(null)
+    const [isClient, setIsClient] = useState(false);
     useEffect(() => {
+        setIsClient(true);
         if (typeof window !== 'undefined') {
             const storedUser = JSON.parse(localStorage.getItem('User'));
             if (storedUser) {
@@ -42,7 +44,7 @@ function Profie() {
             if (result) {
                 data = '';
                 setUser(result.updatedUser)
-                if (typeof window !== 'undefined') {
+                if (isClient) {
                     localStorage.removeItem("User");
                     localStorage.setItem("User", JSON.stringify(result.updatedUser))
                 }
