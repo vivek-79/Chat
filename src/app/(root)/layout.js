@@ -23,9 +23,17 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <Provider store={store}>
-          <TopBar/>
-          {children}
-          <BottomBar/>
+          <div className="layout">
+            <div className="layout-a">
+              <TopBar />
+            </div>
+            <div className="layout-b">
+              {children}
+            </div>
+            <div className="layout-c">
+              <BottomBar />
+            </div>
+          </div>
         </Provider>
       </body>
     </html>

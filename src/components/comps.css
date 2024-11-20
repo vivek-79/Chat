@@ -264,7 +264,7 @@
 .chat-detail-body{
     padding: 0 5px;
     width: 100%;
-    height: calc(100vh - 115px);
+    height: calc(100vh - 118px);
     overflow-y: scroll;
     overflow-x: hidden;
     display: flex;
@@ -470,7 +470,7 @@
 
     }
     .chat-detail-body{
-        height: calc(100vh - 159px);
+        height: calc(100vh - 154px);
     }
     .add-icon-req , .add-icon{
         bottom: 30px;
