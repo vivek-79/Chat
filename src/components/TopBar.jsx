@@ -13,7 +13,6 @@ function TopBar() {
     const[user,setUser] = useState()
     useEffect(() => {
       if (typeof window !== 'undefined') {
-          setIsClient(true);
           const storedUser = JSON.parse(localStorage.getItem('User'));
           if (storedUser) {
               setUser(storedUser);
