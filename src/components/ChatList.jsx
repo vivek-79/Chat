@@ -15,8 +15,15 @@ function ChatList({ chatId }) {
   const [contact, setContact] = useState([])
   const [loading, setLoading] = useState(false)
   const router = useRouter()
-  const userId = JSON.parse(localStorage.getItem('User'))?._id
-
+  const [userId, setUserId] = useState(null)
+  useEffect(()=>{
+      if (typeof window !== 'undefined') {
+          const storedUser = JSON.parse(localStorage.getItem('User'));
+          if (storedUser) {
+            setUserId(storedUser._id);
+          }
+        }
+  },[])
   if (!userId) {
     router.push('/login')
   }

@@ -12,10 +12,15 @@ function Profie() {
     const {register,handleSubmit,watch,setValue} = useForm()
     const [img,setImg] =useState('')
     const [loader , setLoader] = useState(true)
-
-    let user =JSON.parse(localStorage.getItem("User"));
+    const [user, setUser] = useState(null)
     useEffect(()=>{
         setLoader(false)
+        if (typeof window !== 'undefined') {
+            const storedUser = JSON.parse(localStorage.getItem('User'));
+            if (storedUser) {
+              setUser(storedUser);
+            }
+          }
     },[])
     const uploadPhoto = async (result)=>{
         setValue('profileImg',result?.info?.secure_url)

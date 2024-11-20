@@ -8,7 +8,16 @@ function Contacts() {
     const [contact, setContact] = useState([])
     const [searched, setSearched] = useState([])
     const router = useRouter()
-    const userId = JSON.parse(localStorage.getItem('User'))._id
+    const [userId, setUserId] = useState(null)
+    useEffect(()=>{
+        if (typeof window !== 'undefined') {
+            const storedUser = JSON.parse(localStorage.getItem('User'));
+            if (storedUser) {
+              setUserId(storedUser?._id);
+            }
+          }
+    },[])
+    
     useEffect(() => {
         const getUser = async () => {
             try {
