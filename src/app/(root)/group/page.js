@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react'
 import './group.css'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
-function page() {
+function Page() {
 
     const userId = JSON.parse(localStorage.getItem('User'))?._id
     const [friend, setFriend] = useState([])
@@ -125,4 +125,4 @@ function page() {
     )
 }
 
-export default page
+export default Page

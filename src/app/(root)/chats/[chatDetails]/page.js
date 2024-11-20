@@ -6,7 +6,7 @@ import React, { useEffect, useState } from 'react'
 import '../chat.css'
 import ChatDetail from '@/components/ChatDetail'
 
-function page({params}) {
+function Page({params}) {
 
   const chatId = params.chatDetails
   const [detail,setDetail] = useState()
@@ -34,4 +34,4 @@ function page({params}) {
   )
 }
 
-export default page
+export default Page
