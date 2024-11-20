@@ -137,7 +137,7 @@ function ChatDetail({ detail }) {
                 </div>:
                 member.map((item)=>(
                     item._id === userId ? null :
-                    <div className='chat-detail-header'>
+                    <div className='chat-detail-header' key={item._id}>
                     <Image src={item.avatar || '/assets/defaultImg.jpg'}
                         width={40}
                         height={40}
