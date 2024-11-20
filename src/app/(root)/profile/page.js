@@ -27,7 +27,7 @@ function Profie() {
         setImg(result?.info?.secure_url)
     }
     const updateProfile = async (data) => {
-        if(!user) return
+        if(!user) return null
         data.userId = user._id
         try {
             const post = await fetch('http://localhost:3000/api/updateUser', {
@@ -45,6 +45,9 @@ function Profie() {
                 if (typeof window !== 'undefined') {
                     localStorage.removeItem("User");
                     localStorage.setItem("User", JSON.stringify(result.updatedUser))
+                }
+                else{
+                    return null
                 }
 
             }
