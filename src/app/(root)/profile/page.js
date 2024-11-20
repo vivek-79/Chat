@@ -28,7 +28,6 @@ function Profie() {
     }
     const updateProfile = async(data)=>{
         data.userId = user._id
-        console.log(data)
 
         const post =await fetch('http://localhost:3000/api/updateUser',{
             method:'POST',
@@ -41,12 +40,11 @@ function Profie() {
         const result = await post.json()
         if(result){
             data='';
-            user = result.updatedUser
+            setUser(result.updatedUser)
             localStorage.removeItem("User");
             localStorage.setItem("User",JSON.stringify(result.updatedUser))
         }
     }
-    console.log(user)
     return loader?(
     <Loader/>
     ) : (
