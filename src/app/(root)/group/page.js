@@ -105,7 +105,7 @@ function Page() {
                 {friend && friend.map((item) => (
                     <li key={item._id}>
                         <input type='checkbox' onChange={() => handleAdd(item._id)}></input>
-                        <Image src={item.avatar || '/assets/defaultImg.jpg'} width={35} height={35} style={{ borderRadius: '50%' }} />
+                        <Image src={item.avatar || '/assets/defaultImg.jpg'} width={35} height={35} style={{ borderRadius: '50%' }} alt='group-pic'/>
                         <p>{item.fullName}</p>
                     </li>
                 ))}

@@ -150,14 +150,14 @@ function ChatDetail({ detail }) {
             <div className='chat-detail-body'>
 
                 {chat && chat.map((item, indx) => (
-                    item.sender._id== userId || item.sender== userId?<div className= {item.text ? 'own-message':'own-message-pic'} id={item._id}>
+                    item.sender._id== userId || item.sender== userId?<div className= {item.text ? 'own-message':'own-message-pic'} key={item._id}>
                     {item.text ? <p>{item.text}</p> : <img src={item.photo} alt='chat-pic'/>}
                     <p className='time'>{new Date(item.createdAt).toLocaleTimeString([], {
                         hour: "2-digit",
                         minute: "2-digit",
                         hour12: false
                     })} {item.seenBy.length>1 && <span>✓</span>}</p>
-                    </div>: <div className= {item.text ? 'Others-message':'Others-message-pic'} id={indx}>
+                    </div>: <div className= {item.text ? 'Others-message':'Others-message-pic'} key={indx}>
                     {detail.isGroup && <Image id='chat-pic' src={item?.sender?.avatar || '/assets/defaultImg.jpg'} width={30} height={30} style={{borderRadius:'50%'}} alt='chat-pic'/>}
                     {item.text ? <p className='Others-message-p1'>{detail.isGroup && <span>{item?.sender?.fullName}</span>}{item.text}</p> : <img src={item.photo} alt='chat-pic'/>}
                         <p className='time'>{new Date(item.createdAt).toLocaleTimeString([], {
