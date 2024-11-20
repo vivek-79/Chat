@@ -41,8 +41,11 @@ function Profie() {
         if(result){
             data='';
             setUser(result.updatedUser)
-            localStorage.removeItem("User");
-            localStorage.setItem("User",JSON.stringify(result.updatedUser))
+            if (typeof window !== 'undefined'){
+                localStorage.removeItem("User");
+                localStorage.setItem("User",JSON.stringify(result.updatedUser))
+            }
+           
         }
     }
     return loader?(
