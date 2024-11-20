@@ -15,8 +15,8 @@ function Profie() {
     const [user, setUser] = useState(null)
     const [isClient, setIsClient] = useState(false);
     useEffect(() => {
-        setIsClient(true);
         if (typeof window !== 'undefined') {
+            setIsClient(true);
             const storedUser = JSON.parse(localStorage.getItem('User'));
             if (storedUser) {
                 setUser(storedUser);
