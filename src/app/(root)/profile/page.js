@@ -9,61 +9,65 @@ import Loader from '@/components/Loader';
 
 function Profie() {
 
-    const {register,handleSubmit,watch,setValue} = useForm()
-    const [img,setImg] =useState('')
-    const [loader , setLoader] = useState(true)
+    const { register, handleSubmit, watch, setValue } = useForm()
+    const [img, setImg] = useState('')
+    const [loader, setLoader] = useState(true)
     const [user, setUser] = useState(null)
-    useEffect(()=>{
-        setLoader(false)
+    useEffect(() => {
         if (typeof window !== 'undefined') {
             const storedUser = JSON.parse(localStorage.getItem('User'));
             if (storedUser) {
-              setUser(storedUser);
+                setUser(storedUser);
             }
-          }
-    },[])
-    const uploadPhoto = async (result)=>{
-        setValue('profileImg',result?.info?.secure_url)
+        }
+        setLoader(false)
+    }, [])
+    const uploadPhoto = async (result) => {
+        setValue('profileImg', result?.info?.secure_url)
         setImg(result?.info?.secure_url)
     }
-    const updateProfile = async(data)=>{
+    const updateProfile = async (data) => {
         data.userId = user._id
 
-        const post =await fetch('http://localhost:3000/api/updateUser',{
-            method:'POST',
-            headers:{
-               'Content-Type' : 'application/json'
-            },
-            body:JSON.stringify(data)
-        })
+        try {
+            const post = await fetch('http://localhost:3000/api/updateUser', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
 
-        const result = await post.json()
-        if(result){
-            data='';
-            setUser(result.updatedUser)
-            if (typeof window !== 'undefined'){
-                localStorage.removeItem("User");
-                localStorage.setItem("User",JSON.stringify(result.updatedUser))
+            const result = await post.json()
+            if (result) {
+                data = '';
+                setUser(result.updatedUser)
+                if (typeof window !== 'undefined') {
+                    localStorage.removeItem("User");
+                    localStorage.setItem("User", JSON.stringify(result.updatedUser))
+                }
+
             }
-           
+        } catch (error) {
+            console.log(error)
         }
     }
-    return loader?(
-    <Loader/>
+    return loader ? (
+        <Loader />
     ) : (
         <main className='profile'>
             <div className='profile-content'>
                 <h2 >Edit Profile</h2>
                 <form className='profile-content'
-                 onSubmit={handleSubmit(updateProfile)}
+                    onSubmit={handleSubmit(updateProfile)}
                 >
                     <div className='profile-pic'>
                         <img
-                         src={watch('profileImg') ||user?.avatar|| '/assets/defaultImg.jpg'} alt='profile image'
+                            src={watch('profileImg') || user?.avatar || '/assets/defaultImg.jpg'} alt='profile image'
                         ></img>
                     </div>
                     <div className='change-pic'>
-                        <CldUploadButton options={{maxFiles:1}} onSuccess={uploadPhoto} uploadPreset='rxdfhyfi'>
+                        <CldUploadButton options={{ maxFiles: 1 }} onSuccess={uploadPhoto} uploadPreset='rxdfhyfi'>
                             <label htmlFor='image'>Change</label>
                         </CldUploadButton>
                     </div>
