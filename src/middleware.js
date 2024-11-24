@@ -4,14 +4,14 @@ export { default } from "next-auth/middleware"
 
 export async function middleware(req) {
     const token = await getToken({ req, secret: process.env.AUTH_SECRET });
-    const url = req.nextUrl
+    //const url = req.nextUrl
     
-    if(token && (
-        url.pathname =='/login'||
-        url.pathname == '/register'
-    )){
-        return NextResponse.redirect(new URL("/chats", req.url));
-    }
+    // if(token && (
+    //     url.pathname =='/login'||
+    //     url.pathname == '/register'
+    // )){
+    //     return NextResponse.redirect(new URL("/chats", req.url));
+    // }
     if (!token) {
         return NextResponse.redirect(new URL("/login", req.url));
     }

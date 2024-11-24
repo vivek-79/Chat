@@ -6,10 +6,9 @@ import React, { useState } from 'react'
 import '../register/register.css'
 import Link from 'next/link'
 import { useForm } from 'react-hook-form'
-import { redirect, useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import MailIcon from '@mui/icons-material/Mail';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
-import { BASE_URL } from '@/utils/constants'
 import {signIn} from 'next-auth/react'
 
 function Page() {
@@ -20,13 +19,18 @@ function Page() {
 
     const handleRegister = async (data) => {
         seterror('')
+        console.log(data)
+        console.log('hii')
         try {
             const register = await signIn("credentials",{
                 ...data,
                 redirect:false
             })
-            if(register){
-                router.push('/chats')
+            if(register.ok){
+                router.push('chats')
+            }
+            else{
+                seterror('Invalid Email or Password')
             }
         } catch (error) {
             seterror(error.message)
