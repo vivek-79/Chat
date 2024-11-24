@@ -26,6 +26,9 @@ function Page() {
                 ...data,
                 redirect:false
             })
+            console.log(register)
+            console.log(register)
+            console.log(register)
             if(register.ok){
                 router.push('chats')
             }
