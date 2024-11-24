@@ -26,11 +26,10 @@ function Page() {
                 ...data,
                 redirect:false
             })
-            console.log(register)
-            console.log(register)
-            console.log(register)
+            console.log('haan',register)
+
             if(register.ok){
-                router.push('chats')
+                router.push('/chats')
             }
             else{
                 seterror('Invalid Email or Password')
