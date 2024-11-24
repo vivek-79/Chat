@@ -7,31 +7,28 @@ import { useForm } from 'react-hook-form';
 import { CldUploadButton } from 'next-cloudinary';
 import Loader from '@/components/Loader';
 import { BASE_URL } from '@/utils/constants';
+import { signIn, useSession } from 'next-auth/react';
 
 function Profie() {
 
     const { register, handleSubmit, watch, setValue } = useForm()
-    const [img, setImg] = useState('')
+    const [user,setUser] = useState()
     const [loader, setLoader] = useState(true)
-    const [user, setUser] = useState(null)
-    const [isClient, setIsClient] = useState(false);
-    useEffect(() => {
-        if (typeof window !== 'undefined') {
-            setIsClient(true);
-            const storedUser = JSON.parse(localStorage.getItem('User'));
-            if (storedUser) {
-                setUser(storedUser);
-            }
+    
+    const session = useSession()
+    const data = session?.data?.user
+    useEffect(()=>{
+        if(data){
+            setUser(data)
+            setLoader(false)
         }
-        setLoader(false)
-    }, [])
+    },[data,user])
     const uploadPhoto = async (result) => {
         setValue('profileImg', result?.info?.secure_url)
-        setImg(result?.info?.secure_url)
     }
     const updateProfile = async (data) => {
         if(!user) return null
-        data.userId = user._id
+        data.userId = user.id
         try {
             const post = await fetch(`${BASE_URL}/api/updateUser`, {
                 method: 'POST',
@@ -45,10 +42,7 @@ function Profie() {
             if (result) {
                 data = '';
                 setUser(result.updatedUser)
-                if (isClient) {
-                    localStorage.removeItem("User");
-                    localStorage.setItem("User", JSON.stringify(result.updatedUser))
-                }
+               await signIn('credentials',{redirect:false})
 
             }
         } catch (error) {

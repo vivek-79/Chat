@@ -4,20 +4,15 @@ import React, { useEffect, useState } from 'react'
 import Loader from './Loader'
 import { useRouter } from 'next/navigation'
 import { BASE_URL } from '@/utils/constants'
+import { useSession } from 'next-auth/react'
 function Contacts() {
     const [loading, setLoading] = useState(true)
     const [contact, setContact] = useState([])
     const [searched, setSearched] = useState([])
     const router = useRouter()
-    const [userId, setUserId] = useState(null)
-    useEffect(()=>{
-        if (typeof window !== 'undefined') {
-            const storedUser = JSON.parse(localStorage.getItem('User'));
-            if (storedUser) {
-              setUserId(storedUser?._id);
-            }
-          }
-    },[])
+    
+    const session = useSession()
+    const userId = session?.data?.user?.id
     
     useEffect(() => {
         const getUser = async () => {

@@ -2,10 +2,9 @@
 'use client'
 import localFont from "next/font/local";
 import "../globals.css";
-import { Provider } from "react-redux";
-import store from './../../redux/store'
 import TopBar from '@/components/TopBar'
 import BottomBar from "@/components/BottomBar";
+import Provider from "@/components/Provider";
 
 const geistSans = localFont({
   src: "../fonts/GeistVF.woff",
@@ -22,7 +21,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <Provider store={store}>
+        <Provider>
           <div className="layout">
             <div className="layout-a">
               <TopBar />

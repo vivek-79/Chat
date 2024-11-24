@@ -8,6 +8,8 @@ import ChatBox from './ChatBox'
 import { pusherClient } from '@/lib/pusher'
 import { useRouter } from 'next/navigation'
 import { BASE_URL } from '@/utils/constants'
+import { useSession } from 'next-auth/react'
+
 
 function ChatList({ chatId }) {
 
@@ -16,20 +18,9 @@ function ChatList({ chatId }) {
   const [contact, setContact] = useState([])
   const [loading, setLoading] = useState(false)
   const router = useRouter()
-  const [userId, setUserId] = useState(null)
-  useEffect(()=>{
-      if (typeof window !== 'undefined') {
-          const storedUser = JSON.parse(localStorage.getItem('User'));
-          if (storedUser) {
-            setUserId(storedUser._id);
-            console.log(storedUser)
-
-          }
-          else{
-            router.push('/login')
-          }
-        }
-  },[])
+  
+  const sesseion = useSession()
+  const userId = sesseion?.data?.user.id
   const handleShowrequests = async () => {
     setShowRequests(true)
     const res = await fetch(`${BASE_URL}/api/sendRequest?userId=${userId}`)
@@ -45,15 +36,13 @@ function ChatList({ chatId }) {
       decision,
       requestedId
     }
-    const res = await fetch(`${BASE_URL}/api/chats`, {
+     await fetch(`${BASE_URL}/api/chats`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(data)
     })
-
-    const result = await res.json()
   }
 
   useEffect(() => {

@@ -8,14 +8,17 @@ import { useForm } from 'react-hook-form';
 import Loader from './Loader';
 import { pusherClient } from '@/lib/pusher';
 import { BASE_URL } from '@/utils/constants';
+import { useSession } from 'next-auth/react';
 function ChatDetail({ detail }) {
     const member = detail.members
     const { register, handleSubmit, reset } = useForm()
     const chatId = detail?._id
-    const userId = JSON.parse(localStorage.getItem('User'))?._id
+    const session = useSession()
+    const userId = session?.data?.user?.id
     const [chat, setChat] = useState([])
     const [loading,setLoading] = useState(true)
     const latestMessageRef = useRef(null);
+    const [processing,setProccessing] = useState(false)
     const fetchChatMessages = async () => {
         try {
             const res = await fetch(`${BASE_URL}/api/messages?chatId=${detail._id}`);
@@ -37,6 +40,7 @@ function ChatDetail({ detail }) {
 
 
     const handleMessage = async (data) => {
+        setProccessing(true)
         const pic= data?.target?.files?.[0]
         try {
             let photo;
@@ -70,6 +74,7 @@ function ChatDetail({ detail }) {
                 chatId: detail._id
             }
             if(!message.text && !message.photo){
+                setProccessing(false)
                 return null
             }
             const res = await fetch(`${BASE_URL}/api/messages`, {
@@ -83,8 +88,10 @@ function ChatDetail({ detail }) {
             if (result.success) {
                 reset()
             }
+            setProccessing(false)
         } catch (error) {
             console.error("Error creating message:", error.message);
+            setProccessing(false)
         }
     }
     useEffect(()=>{
@@ -125,7 +132,6 @@ function ChatDetail({ detail }) {
             latestMessageRef.current.scrollIntoView({ behavior: 'smooth' });
         }
     }, [chat]);
-    console.log(chat)
     return loading ? <Loader/> : (
         <div className='chat-detail'>
             {detail.isGroup ? <div className='chat-detail-header'>
@@ -176,7 +182,7 @@ function ChatDetail({ detail }) {
                     <input id='pic' type='file' onInput={(e)=>handleMessage(e)} />
 
                     <input type="text" placeholder='Write message ...' {...register('text')} />
-                    <button type='submit'><SendIcon /></button>
+                    <button type='submit' disabled={processing}><SendIcon /></button>
                 </form>
             </div>
         </div>

@@ -1,10 +1,8 @@
 
-'use client'
 
 import localFont from "next/font/local";
 import "../globals.css";
-import { Provider } from "react-redux";
-import store from "@/redux/store";
+import Provider from "@/components/Provider";
 
 const geistSans = localFont({
   src: "../fonts/GeistVF.woff",
@@ -16,13 +14,16 @@ const geistMono = localFont({
   variable: "--font-geist-mono",
   weight: "100 900",
 });
-
+export const metadata ={
+  title:'Chat app',
+  description:'A Next-js chat app'
+}
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} auth-body`}>
-        <Provider store={store}>
+        <Provider>
         {children}
         </Provider>
       </body>

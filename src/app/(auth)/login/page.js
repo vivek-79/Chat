@@ -6,10 +6,11 @@ import React, { useState } from 'react'
 import '../register/register.css'
 import Link from 'next/link'
 import { useForm } from 'react-hook-form'
-import { useRouter } from 'next/navigation'
+import { redirect, useRouter } from 'next/navigation'
 import MailIcon from '@mui/icons-material/Mail';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import { BASE_URL } from '@/utils/constants'
+import {signIn} from 'next-auth/react'
 
 function Page() {
 
@@ -20,22 +21,15 @@ function Page() {
     const handleRegister = async (data) => {
         seterror('')
         try {
-            const register = await fetch(`${BASE_URL}/api/login`, {
-                method: "POST",
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data),
+            const register = await signIn("credentials",{
+                ...data,
+                redirect:false
             })
-
-            const result = await register.json()
-            if (!result.success) {
-                seterror(result.message)
+            if (!register.ok) {
+                seterror("Invalid Email or Password")
             }
             else {
-                localStorage.setItem("User",JSON.stringify(result.loggedInUser));
-                router.push('/chats')
-               
+                router.push('/chats') 
             }
         } catch (error) {
             seterror(error.message)

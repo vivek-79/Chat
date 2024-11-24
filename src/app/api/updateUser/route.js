@@ -14,7 +14,7 @@ export async function POST(req){
     await dbConnect();
 
     const data = await req.json();
-
+    console.log(data)
     const user = await User.findById(data.userId)
     if(!user){
         return NextResponse.json({success:false,messge:"User not exist"},{status:400})

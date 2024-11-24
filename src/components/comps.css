@@ -265,7 +265,7 @@
 .chat-detail-body{
     padding: 0 5px;
     width: 100%;
-    height: calc(100vh - 118px);
+    height: calc(100vh - 130px);
     overflow-y: scroll;
     overflow-x: hidden;
     display: flex;
@@ -283,7 +283,12 @@
 }
 .chat-detail-foot{
     width: 100%;
-    height: 35px;
+    height: 48px;
+    position: fixed;
+    width: 65%;
+    right: 5px;
+    margin: auto;
+    bottom: 2px;
     display: flex;
     padding: 2px 10px;
     gap: 5px;
@@ -430,7 +435,7 @@
 .chat-body-lower{
     width: 100%;
     height: 10px;
-    margin-bottom: 10px;
+    margin-bottom: 30px;
 }
 @media (min-width:600px) {
     .top-bar-right a:nth-child(2){
@@ -476,6 +481,22 @@
     .add-icon-req , .add-icon{
         bottom: 30px;
         right: 10px;
+    }
+    .chat-detail-foot{
+        height: 48px;
+        width: 100%;
+        bottom: 35px;
+        background-color: #0000006e;
+        padding: 1px 10px;
+        backdrop-filter: blur(10px);
+    }
+    .chat-detail-foot form {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+        gap: 5px;
+        justify-content: space-between;
     }
 }
 @media (min-width:470px){
