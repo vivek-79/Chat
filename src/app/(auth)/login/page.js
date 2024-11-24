@@ -25,11 +25,8 @@ function Page() {
                 ...data,
                 redirect:false
             })
-            if (!register.ok) {
-                seterror("Invalid Email or Password")
-            }
-            else {
-                router.push('/chats') 
+            if(register){
+                router.push('/chats')
             }
         } catch (error) {
             seterror(error.message)
