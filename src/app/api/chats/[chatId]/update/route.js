@@ -1,5 +1,5 @@
-import Chat from "@models/Chat"
-import { connectToDB } from "@mongodb"
+import Chat from "../../../../../models/Chat"
+import { connectToDB } from "../../../../../mongodb"
 
 export const POST = async (req, { params }) => {
   try {
