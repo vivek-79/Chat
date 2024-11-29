@@ -1,165 +1,51 @@
+import { pusherServer } from "../../../lib/pusher.js";
+import Chat from "../../../models/Chat.js";
+import User from "../../../models/user.js";
+import { connectToDB } from "../../../mongodb";
 
+export const POST = async (req) => {
+  try {
+    await connectToDB();
 
-import { Chat } from "@/models/Chat.model"
-import { User } from "@/models/user.model"
-import mongoose from "mongoose"
-import { NextResponse } from "next/server"
+    const body = await req.json();
 
+    const { currentUserId, members, isGroup, name, groupPhoto } = body;
 
-export const POST = async (req, res) => {
+    // Define "query" to find the chat
+    const query = isGroup
+      ? { isGroup, name, groupPhoto, members: [currentUserId, ...members] }
+      : { members: { $all: [currentUserId, ...members], $size: 2 } };
 
-    const { userId, decision, requestedId } = await req.json()
+    let chat = await Chat.findOne(query);
 
-    if ([userId, decision, requestedId].some((field) => (
-        field.trim() === ''
-    ))) {
-        throw new Error('Missing information')
-    }
-    try {
-        if (decision == 'accept') {
+    if (!chat) {
+      chat = await new Chat(
+        isGroup ? query : { members: [currentUserId, ...members] }
+      );
 
-            const existChat = await Chat.findOne({
-                members: {
-                    $all: [
-                        userId,
-                        requestedId
-                    ]
-                }
-            })
-            if (existChat) {
-                return NextResponse.json({ success: true, message: 'Chat alredy exist' })
-            }
-            else {
-                await User.findByIdAndUpdate(userId,{
-                    $push:{friends:requestedId}
-                })
+      await chat.save();
 
-                await User.findByIdAndUpdate(requestedId,
-                    {
-                        $push:{friends:userId}
-                    }
-                )
-                const newChat = new Chat({
-                    members: [userId, requestedId]
-                })
-
-                await newChat.save()
-
-                if (newChat) {
-                    await User.findByIdAndUpdate(
-                        userId,
-                        {
-                            $push: {
-                                chats: newChat._id
-                            }
-                        }
-                    )
-
-                    await User.findByIdAndUpdate(
-                        requestedId,
-                        {
-                            $push: {
-                                chats: newChat._id
-                            }
-                        }
-                    )
-                    await User.findByIdAndUpdate(
-                        userId,
-                        {
-                            $pull: { requests: requestedId }
-                        }
-                    )
-                    const user = await User.findById(userId)
-                    const requests = user.requests
-
-                    const data = {
-                        newChat,
-                        requests
-                    }
-                    return NextResponse.json({ success: true, message: 'New chat created', data }, { status: 201 })
-                }
-                else {
-                    return NextResponse.json({ success: false, message: 'Server error' }, { status: 500 })
-                }
-            }
-
-        }
-        else {
-
-            await User.findByIdAndUpdate(
-                userId,
-                {
-                    $pull: { requests: requestedId }
-                }
-            )
-            const user = await User.findById(userId)
-            const requests = user.requests
-            return NextResponse.json({ success: true, message: 'Request deleted', requests }, { status: 201 })
-        }
-    } catch (error) {
-        console.log(error.message)
-        return NextResponse.json({ success: false, message: 'Server error' }, { status: 500 })
-    }
-}
-
-export const GET = async (req, res) => {
-
-    const { searchParams } = new URL(req.url)
-    const userId = searchParams.get('userId')
-
-    if (!userId) {
-        return NextResponse.json({ success: false, message: 'User Id not found' }, { status: 400 })
+      const updateAllMembers = chat.members.map(async (memberId) => {
+        await User.findByIdAndUpdate(
+          memberId,
+          {
+            $addToSet: { chats: chat._id },
+          },
+          { new: true }
+        );
+      }) 
+      Promise.all(updateAllMembers);
+      
+      /* Trigger a Pusher event for each member to notify a new chat */
+      chat.members.map(async (member) => {
+        await pusherServer.trigger(member._id.toString(), "new-chat", chat)
+      })
     }
 
-    try {
-        const chat = await User.aggregate([
-            {
-                $match:{
-                    _id: new mongoose.Types.ObjectId(userId)
-                }
-            },
-            {
-                $lookup:{
-                    from:'chats',
-                    localField:'chats',
-                    foreignField:'_id',
-                    as:'chats',
-                    pipeline:[
-                        {
-                            $lookup:{
-                                from:'users',
-                                localField:'members',
-                                foreignField:'_id',
-                                as:'members',
-                                pipeline:[
-                                    {
-                                        $project:{
-                                            fullName:1,
-                                            avatar:1
-                                        }
-                                    }
-                                ]
-                            }
-                        },
-                        {
-                            $lookup:{
-                                from:'messages',
-                                localField:'lastMessage',
-                                foreignField:'_id',
-                                as:'lastMessage'
-                            }
-                        }
-                    ]
-                }
-            },{
-                $project:{
-                    chats:1
-                }
-            }
-        ])
-        return NextResponse.json({ success: true, message: 'Chats retrieved successfully', chat });
-    } catch (error) {
-        console.error(error.message);
-        return NextResponse.json({ success: false, message: 'Server error' }, { status: 500 });
-    }
-}
+
+    return new Response(JSON.stringify(chat), { status: 200 });
+  } catch (err) {
+    console.error(err);
+    return new Response("Failed to create a new chat", { status: 500 })
+  }
+};

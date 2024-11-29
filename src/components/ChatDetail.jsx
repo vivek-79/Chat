@@ -1,192 +1,200 @@
+"use client";
 
-'use client'
-import React, { useEffect, useState ,useRef} from 'react'
-import Image from 'next/image'
-import { AddPhotoAlternate } from '@mui/icons-material'
-import SendIcon from '@mui/icons-material/Send';
-import { useForm } from 'react-hook-form';
-import Loader from './Loader';
-import { pusherClient } from '@/lib/pusher';
-import { BASE_URL } from '@/utils/constants';
-import { useSession } from 'next-auth/react';
-function ChatDetail({ detail }) {
-    const member = detail.members
-    const { register, handleSubmit, reset } = useForm()
-    const chatId = detail?._id
-    const session = useSession()
-    const userId = session?.data?.user?.id
-    const [chat, setChat] = useState([])
-    const [loading,setLoading] = useState(true)
-    const latestMessageRef = useRef(null);
-    const [processing,setProccessing] = useState(false)
-    const fetchChatMessages = async () => {
-        try {
-            const res = await fetch(`${BASE_URL}/api/messages?chatId=${detail._id}`);
-            const result = await res.json();
-            console.log(result)
-            if (result.success) {
-                setChat(result.updatedChat.messages); // Assuming result contains updatedChat and its messages
-            }
-        } catch (error) {
-            console.error('Error fetching chat messages:', error.message);
-        } finally {
-            setLoading(false);
-        }
+import { useState, useEffect, useRef } from "react";
+import Loader from "./Loader";
+import { AddPhotoAlternate, Send } from "@mui/icons-material";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
+import { CldUploadButton } from "next-cloudinary";
+import MessageBox from "./MessageBox";
+import { pusherClient } from "../lib/pusher.js";
+
+const ChatDetails = ({ chatId }) => {
+  const [loading, setLoading] = useState(true);
+  const [chat, setChat] = useState({});
+  const [otherMembers, setOtherMembers] = useState([]);
+
+  const { data: session } = useSession();
+  const currentUser = session?.user;
+
+  const [text, setText] = useState("");
+
+  const getChatDetails = async () => {
+    try {
+      const res = await fetch(`/api/chats/${chatId}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await res.json();
+      setChat(data);
+      setOtherMembers(
+        data?.members?.filter((member) => member._id !== currentUser._id)
+      );
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    if (currentUser && chatId) getChatDetails();
+  }, [currentUser, chatId]);
+
+  const sendText = async () => {
+    try {
+      const res = await fetch("/api/messages", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          chatId,
+          currentUserId: currentUser._id,
+          text,
+        }),
+      });
+
+      if (res.ok) {
+        setText("");
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const sendPhoto = async (result) => {
+    console.log(result)
+    try {
+      const res = await fetch("/api/messages", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          chatId,
+          currentUserId: currentUser._id,
+          photo: result?.info?.secure_url,
+        }),
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    pusherClient.subscribe(chatId);
+
+    const handleMessage = async (newMessage) => {
+      setChat((prevChat) => {
+        return {
+          ...prevChat,
+          messages: [...prevChat.messages, newMessage],
+        };
+      });
     };
-    useEffect(() => {
-        fetchChatMessages();
-    }, [detail._id])
 
+    pusherClient.bind("new-message", handleMessage);
 
+    return () => {
+      pusherClient.unsubscribe(chatId);
+      pusherClient.unbind("new-message", handleMessage);
+    };
+  }, [chatId]);
 
-    const handleMessage = async (data) => {
-        setProccessing(true)
-        const pic= data?.target?.files?.[0]
-        try {
-            let photo;
-            if(pic){
-                const url = `https://api.cloudinary.com/v1_1/dqigib5my/image/upload`;
-                const formData = new FormData();
-                formData.append("file", pic);
-                formData.append("upload_preset", "rxdfhyfi");
-            
-                try {
-                    const response = await fetch(url, {
-                        method: "POST",
-                        body: formData
-                    });
-            
-                    if (response.ok) {
-                        const res = await response.json();
-                        console.log("Uploaded successfully:", res);
-                        photo = res?.secure_url
-                    } else {
-                        console.error("Upload failed:", response.statusText);
-                    }
-                } catch (error) {
-                    console.error("Error:", error.message);
-                }
-            }
-            const message = {
-                text: data.text || '',
-                photo: photo || '',
-                senderId: userId || '',
-                chatId: detail._id
-            }
-            if(!message.text && !message.photo){
-                setProccessing(false)
-                return null
-            }
-            const res = await fetch(`${BASE_URL}/api/messages`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(message)
-            })
-            const result = await res.json()
-            if (result.success) {
-                reset()
-            }
-            setProccessing(false)
-        } catch (error) {
-            console.error("Error creating message:", error.message);
-            setProccessing(false)
-        }
-    }
-    useEffect(()=>{
-        
-    const seenBy = async()=>{
+  /* Scrolling down to the bottom when having the new message */
 
-        const data = {
-            chatId: detail._id,
-            userId:userId
-        }
-        const res = await fetch (`${BASE_URL}/api/chatDetails`,{
-            method:'POST',
-            headers:{
-                'Content-Type':'application/json',
-            },
-            body:JSON.stringify(data)
-        })
-    }
+  const bottomRef = useRef(null);
 
-    seenBy();
-    },[chat])
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({
+      behavior: "smooth",
+    });
+  }, [chat?.messages]);
 
-    useEffect(()=>{
-        pusherClient.subscribe(chatId)
+  return loading ? (
+    <Loader />
+  ) : (
+    <div className="pb-10 ">
+      <div className="chat-details">
+        <div className="chat-header">
+          {chat?.isGroup ? (
+            <>
+              <Link href={`/chats/${chatId}/group-info`}>
+                <img
+                  src={chat?.groupPhoto || "/assets/group.png"}
+                  alt="group-photo"
+                  className="profilePhoto"
+                />
+              </Link>
 
-        const handlePuser = async(updatedChat)=>{
-            setChat((prevChat)=>[...prevChat,updatedChat])
-        }
-        pusherClient.bind("new-message",handlePuser)
-        return () => {
-            pusherClient.unbind('new-message',handlePuser);
-            pusherClient.unsubscribe(chatId);
-          };
-    },[chatId])
-
-    useEffect(() => {
-        if (latestMessageRef.current) {
-            latestMessageRef.current.scrollIntoView({ behavior: 'smooth' });
-        }
-    }, [chat]);
-    return loading ? <Loader/> : (
-        <div className='chat-detail'>
-            {detail.isGroup ? <div className='chat-detail-header'>
-                    <Image src={detail.groupPhoto || '/assets/group.png'}
-                        width={40}
-                        height={40}
-                        style={{ borderRadius: '50%' }}
-                    />
-                    <p>{detail.name}</p>
-                </div>:
-                member.map((item)=>(
-                    item._id === userId ? null :
-                    <div className='chat-detail-header' key={item._id}>
-                    <Image src={item.avatar || '/assets/defaultImg.jpg'}
-                        width={40}
-                        height={40}
-                        style={{ borderRadius: '50%' }}
-                    />
-                    <p>{item.fullName}</p>
-                </div>
-                ))
-            }
-            <div className='chat-detail-body'>
-
-                {chat && chat.map((item, indx) => (
-                    item.sender._id== userId || item.sender== userId?<div className= {item.text ? 'own-message':'own-message-pic'} key={item._id}>
-                    {item.text ? <p>{item.text}</p> : <img src={item.photo} alt='chat-pic'/>}
-                    <p className='time'>{new Date(item.createdAt).toLocaleTimeString([], {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                        hour12: false
-                    })} {item.seenBy.length>1 && <span>✓</span>}</p>
-                    </div>: <div className= {item.text ? 'Others-message':'Others-message-pic'} key={indx}>
-                    {detail.isGroup && <Image id='chat-pic' src={item?.sender?.avatar || '/assets/defaultImg.jpg'} width={30} height={30} style={{borderRadius:'50%'}} alt='chat-pic'/>}
-                    {item.text ? <p className='Others-message-p1'>{detail.isGroup && <span>{item?.sender?.fullName}</span>}{item.text}</p> : <img src={item.photo} alt='chat-pic'/>}
-                        <p className='time'>{new Date(item.createdAt).toLocaleTimeString([], {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                            hour12: false
-                        })} </p>
-                    </div>
-                ))}
-                <div className='chat-body-lower' ref={latestMessageRef}></div>
-            </div>
-            <div className='chat-detail-foot'>
-                <form onSubmit={handleSubmit(handleMessage)}>
-                    <label htmlFor="pic"><AddPhotoAlternate /></label>
-                    <input id='pic' type='file' onInput={(e)=>handleMessage(e)} />
-
-                    <input type="text" placeholder='Write message ...' {...register('text')} />
-                    <button type='submit' disabled={processing}><SendIcon /></button>
-                </form>
-            </div>
+              <div className="text">
+                <p>
+                  {chat?.name} &#160; &#183; &#160; {chat?.members?.length}{" "}
+                  members
+                </p>
+              </div>
+            </>
+          ) : (
+            <>
+              <img
+                src={otherMembers[0].profileImage || "/assets/defaultImg.jpg"}
+                alt="profile photo"
+                className="profilePhoto"
+              />
+              <div className="text">
+                <p>{otherMembers[0].username}</p>
+              </div>
+            </>
+          )}
         </div>
-    )
-}
 
-export default ChatDetail
+        <div className="chat-body ">
+          {chat?.messages?.map((message, index) => (
+            <MessageBox
+              key={index}
+              message={message}
+              currentUser={currentUser}
+            />
+          ))}
+          <div ref={bottomRef} />
+        </div>
+
+        <div className="send-message">
+          <div className="prepare-message">
+            <CldUploadButton
+              options={{ maxFiles: 1 }}
+              onSuccess={sendPhoto}
+              uploadPreset="rxdfhyfi"
+            >
+              <AddPhotoAlternate
+                sx={{
+                  fontSize: "35px",
+                  color: "#737373",
+                  cursor: "pointer",
+                  "&:hover": { color: "red" },
+                }}
+              />
+            </CldUploadButton>
+
+            <input
+              type="text"
+              placeholder="Write a message..."
+              className="input-field"
+              value={text}
+              onChange={(e) => setText(e.target.value)}
+              required
+            />
+          </div>
+
+          <div onClick={sendText}>
+            <Send/>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ChatDetails;

@@ -1,30 +1,23 @@
+import { Inter } from "next/font/google";
 
-
-import localFont from "next/font/local";
 import "../globals.css";
-import Provider from "@/components/Provider";
+import ToasterContext from "../../components/ToasterContext";
+import Provider from "../../components/Provider";
 
-const geistSans = localFont({
-  src: "../fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-const geistMono = localFont({
-  src: "../fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
-});
-export const metadata ={
-  title:'Chat app',
-  description:'A Next-js chat app'
-}
+const inter = Inter({ subsets: ["latin"] });
+
+export const metadata = {
+  title: "Auth Halo Chat",
+  description: "Build a Next 14 Chat App",
+};
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} auth-body`}>
+      <body className={`${inter.className} bg-purple-1`}>
         <Provider>
-        {children}
+          <ToasterContext />
+          {children}
         </Provider>
       </body>
     </html>

@@ -1,11 +1,11 @@
+"use client"
 
-'use client'
-import { SessionProvider } from 'next-auth/react'
+import { SessionProvider } from "next-auth/react"
 
-function Provider({children,session}) {
+const Provider = ({ children, session }) => {
   return (
-    <SessionProvider>
-        {children}
+    <SessionProvider session={session}>
+      {children}
     </SessionProvider>
   )
 }

@@ -1,52 +1,82 @@
+import { format } from "date-fns";
+import { useRouter } from "next/navigation";
 
-'use client'
-import React, { useEffect, useState } from 'react'
-import Image from 'next/image'
-import { useRouter } from 'next/navigation'
-import { BASE_URL } from '@/utils/constants'
+const ChatBox = ({ chat, currentUser, currentChatId }) => {
+  const otherMembers = chat?.members?.filter(
+    (member) => member._id !== currentUser._id
+  );
 
+  const lastMessage =
+    chat?.messages?.length > 0 && chat?.messages[chat?.messages.length - 1];
 
-function ChatBox({
-    members ='',
-    userId='',
-    chatsId='',
-    chatId='',
-    messageId='',
-    name,
-    groupPhoto,
-    isGroup
-}
-)
-{
-    const router = useRouter('')
-    const [chat,setChat] = useState({})
-    useEffect(()=>{
-        const res = async()=>{
-            const res = await fetch(`${BASE_URL}/api/lastMessage?messageId=${messageId}`)
+  const seen = lastMessage?.seenBy?.find(
+    (member) => member._id === currentUser._id
+  );
 
-            const result = await res.json();
-            setChat(result?.updatedChat)
-        }
-        res();
-    },[messageId])
+  const router = useRouter();
+
   return (
-    <div className='chat-box'onClick={()=>router.push(`/chats/${chatsId}`)}>
-        {members.map((item)=>(
-            item._id == userId ? '': 
-            <div key={item._id} className={`each-chat ${chatId == chatsId ? 'active-chat':''}`}>
-                <Image src={isGroup? groupPhoto ||'/assets/group.png':item.avatar || '/assets/defaultImg.jpg'} alt="chat-pic" 
-                    width={40}
-                    height={40}
-                    style={{borderRadius:'50%'}}
-                />
-                <div className='each-chat-right'>
-                <p>{isGroup? name:item.fullName}</p>
-                {chat? <p id={chat?.sender?._id !==userId && chat?.seenBy?.length <2?'unread':'read'}>{chat?.sender?._id === userId ?chat.text|| 'image sent':chat.text || 'image received'}</p>:(<p>start chat</p>)}
-                </div>
-            </div>
-        ))}
-    </div>
-  )
-}
+    <div
+      className={`chat-box ${chat._id === currentChatId ? "bg-blue-2" : ""}`}
+      onClick={() => router.push(`/chats/${chat._id}`)}
+    >
+      <div className="chat-info">
+        {chat?.isGroup ? (
+          <img
+            src={chat?.groupPhoto || "/assets/group.png"}
+            alt="group-photo"
+            className="profilePhoto"
+          />
+        ) : (
+          <img
+            src={otherMembers[0].profileImage || "/assets/defaultImg.jpg"}
+            alt="profile-photo"
+            className="profilePhoto"
+          />
+        )}
 
-export default ChatBox
+        <div className="flex flex-col gap-1">
+          {chat?.isGroup ? (
+            <p className="text-base-bold">{chat?.name}</p>
+          ) : (
+            <p className="text-base-bold">{otherMembers[0]?.username}</p>
+          )}
+
+          {!lastMessage && <p className="text-small-bold">Started a chat</p>}
+
+          {lastMessage?.photo ? (
+            lastMessage?.sender?._id === currentUser._id ? (
+              <p className="text-small-medium text-grey-3">You sent a photo</p>
+            ) : (
+              <p
+                className={`${
+                  seen ? "text-small-medium text-grey-3" : "text-small-bold"
+                }`}
+              >
+                Received a photo
+              </p>
+            )
+          ) : (
+            <p
+              className={`last-message ${
+                seen ? "text-small-medium text-grey-3" : "text-small-bold"
+              }`}
+            >
+              {lastMessage?.text}
+            </p>
+          )}
+        </div>
+      </div>
+
+      <div>
+        <p className="text-base-light text-grey-3">
+          {!lastMessage
+            ? format(new Date(chat?.createdAt), "p")
+            : format(new Date(chat?.lastMessageAt), "p")}
+        </p>
+      </div>
+    </div>
+  );
+};
+
+export default ChatBox;

@@ -1,20 +1,53 @@
+"use client"
 
+import { Logout } from "@mui/icons-material";
+import { signOut, useSession } from "next-auth/react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
-import React from 'react'
-import { usePathname } from 'next/navigation';
-import './comps.css'
-import Link from 'next/link';
-import LogoutIcon from '@mui/icons-material/Logout';
+const BottomBar = () => {
+  const pathname = usePathname();
 
-function BottomBar() {
-    const pathname = usePathname()
+  const handleLogout = async () => {
+    signOut({ callbackUrl: "/" });
+  };
+
+  const { data: session } = useSession();
+  const user = session?.user;
+
   return (
-    <div className='bottom-bar'>
-        <Link href='/chats'><p  className={`${pathname ==='/chats'? 'top-bar-active':''}`}>Chats</p></Link>
-            <Link href='/contact'><p  className={`${pathname ==='/contact'? 'top-bar-active':''}`}>Contact</p></Link>
-            <Link href='/'><LogoutIcon sx={{color:'gray'}}/></Link>
-    </div>
-  )
-}
+    <div className="bottom-bar">
+      <Link
+        href="/chats"
+        className={`${
+          pathname === "/chats" ? "text-red-1" : ""
+        } text-heading4-bold`}
+      >
+        Chats
+      </Link>
+      <Link
+        href="/contacts"
+        className={`${
+          pathname === "/contacts" ? "text-red-1" : ""
+        } text-heading4-bold`}
+      >
+        Contacts
+      </Link>
 
-export default BottomBar
+      <Logout
+        sx={{ color: "#737373", cursor: "pointer" }}
+        onClick={handleLogout}
+      />
+
+      <Link href="/profile">
+        <img
+          src={user?.profileImage || "/assets/defaultImg.jpg"}
+          alt="profile"
+          className="profilePhoto"
+        />
+      </Link>
+    </div>
+  );
+};
+
+export default BottomBar;
