@@ -18,6 +18,7 @@ const ChatDetails = ({ chatId }) => {
   const currentUser = session?.user;
 
   const [text, setText] = useState("");
+  const[disable,setDisable] =useState(false)
 
   const getChatDetails = async () => {
     try {
@@ -43,29 +44,34 @@ const ChatDetails = ({ chatId }) => {
   }, [currentUser, chatId]);
 
   const sendText = async () => {
-    try {
-      const res = await fetch("/api/messages", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          chatId,
-          currentUserId: currentUser._id,
-          text,
-        }),
-      });
-
-      if (res.ok) {
-        setText("");
+     setDisable(true)
+    if(text.length>=1){
+      try {
+        const res = await fetch("/api/messages", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            chatId,
+            currentUserId: currentUser._id,
+            text,
+          }),
+        });
+  
+        if (res.ok) {
+          setText("");
+        }
+        setDisable(false)
+      } catch (err) {
+        setDisable(false)
+        console.log(err);
       }
-    } catch (err) {
-      console.log(err);
     }
+  
   };
 
   const sendPhoto = async (result) => {
-    console.log(result)
     try {
       const res = await fetch("/api/messages", {
         method: "POST",
@@ -181,14 +187,19 @@ const ChatDetails = ({ chatId }) => {
             <input
               type="text"
               placeholder="Write a message..."
-              className="input-field"
+              className="input-field "
               value={text}
               onChange={(e) => setText(e.target.value)}
               required
+
             />
           </div>
 
-          <div onClick={sendText}>
+          <div onClick={()=>
+            {if(!disable){
+              sendText()
+            }}
+            }>
             <Send/>
           </div>
         </div>
