@@ -80,6 +80,7 @@ const ChatList = ({ currentChatId }) => {
       <div className="chats">
         {chats?.map((chat, index) => (
           <ChatBox
+            key={index}
             chat={chat}
             index={index}
             currentUser={currentUser}
