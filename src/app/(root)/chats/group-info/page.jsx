@@ -1,6 +1,6 @@
 "use client";
 
-import Loader from "@components/Loader";
+import Loader from "../../../../components/Loader.jsx";
 import { GroupOutlined, PersonOutline } from "@mui/icons-material";
 import { CldUploadButton } from "next-cloudinary";
 import { useParams, useRouter } from "next/navigation";
