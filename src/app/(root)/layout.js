@@ -9,6 +9,7 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata = {
   title: "Halo Chat App",
   description: "A Next.js 14 Chat App ",
+  visualViewport:"width=device-width, initial-scale=1, viewport-fit=cover",
 };
 
 export default function RootLayout({ children }) {
