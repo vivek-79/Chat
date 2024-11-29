@@ -74,7 +74,7 @@ const Contacts = () => {
   return loading ? (
     <Loader />
   ) : (
-    <div className="create-chat-container">
+    <div className="create-chat-container h-full">
       <input
         placeholder="Search contact..."
         className="input-search"
@@ -135,11 +135,11 @@ const Contacts = () => {
             </>
           )}
           <button
-            className="btn"
+            className="btn lg:ml-2"
             onClick={createChat}
             disabled={selectedContacts.length === 0}
           >
-            FIND OR START A NEW CHAT
+            START A NEW CHAT
           </button>
         </div>
       </div>

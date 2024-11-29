@@ -81,7 +81,7 @@ const Profile = () => {
           <p className="text-red-500">{error.username.message}</p>
         )}
 
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between max-sm:flex-col max-sm:gap-2">
           <img
             src={
               watch("profileImage") ||

@@ -80,7 +80,7 @@
   }
 
   .chat-list {
-    @apply h-screen flex flex-col gap-5 pb-20;
+    @apply fixed top-14 right-2 left-2 bottom-16 sm:bottom-2 md:right-1/2 lg:right-2/3 flex flex-col gap-5;
   }
 
   .input-search {
@@ -108,15 +108,15 @@
   }
 
   .create-chat-container {
-    @apply flex flex-col gap-5;
+    @apply fixed top-14 right-2 left-2 bottom-16 sm:bottom-2 md:left-1/2 md:ml-2 lg:left-1/3 flex flex-col gap-5;
   }
 
   .contact-bar {
-    @apply flex gap-7 items-start max-lg:flex-col;
+    @apply flex items-start max-lg:flex-col;
   }
 
   .contact-list {
-    @apply h-screen w-1/2 max-lg:w-full flex flex-col gap-5 bg-white rounded-3xl py-5 px-8 mb-20;
+    @apply h-full w-1/2 max-lg:w-full flex flex-col gap-5 bg-white rounded-3xl py-5 px-8 mb-10;
   }
 
   .contact {

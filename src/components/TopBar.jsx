@@ -47,7 +47,7 @@ const TopBar = () => {
 
         <Link href="/profile">
           <img
-            src={user?.profileImage || "/assets/person.jpg"}
+            src={user?.profileImage || "/assets/defaultImg.jpg"}
             alt="profile"
             className="profilePhoto"
           />
